@@ -1,4 +1,5 @@
 import os
+from colorama import Back, Fore, Style
 
 sols = []
 typesVegetation = ["Culture", "Pâturage", "Boisé", "Lac", "Marécage"]
@@ -10,20 +11,20 @@ os.system("cls")
 
 def print_reponses(nb, veg, pen, clas, pourc, fin):
     if nb is not None:
-        print("********** Sol #" + str(nb) + " **********")
-    print("Végétation: " + typesVegetation[veg - 1])
+        print(Fore.YELLOW + Style.BRIGHT + "*************** Sol #" + str(nb) + " ***************" + Style.RESET_ALL)
+    print(Fore.CYAN + Style.BRIGHT + f"{'Végétation:': <28}" + f"{typesVegetation[veg - 1]:>10}" + Style.RESET_ALL)
     if pen is not None:
-        print("Pente: " + str(pen) + "%")
+        print(Fore.CYAN + Style.NORMAL + f"{'Pente:': <28}" + f"{str(pen) + '%':>10}" + Style.RESET_ALL)
     else:
         if fin:
-            print("Pente: N/A")
+            print(Fore.CYAN + Style.NORMAL + f"{'Pente:': <28}" + f"{'N/A':>10}" + Style.RESET_ALL)
     if clas is not None:
-        print("Classification hydrologique: " + clas)
+        print(Fore.CYAN + Style.BRIGHT + f"{'Classification hydrologique:': <28}" + f"{clas:>10}" + Style.RESET_ALL)
     else:
         if fin:
-            print("Classification hydrologique: N/A")
+            print(Fore.CYAN + Style.BRIGHT + f"{'Classification hydrologiqu:': <28}" + f"{'N/A':>10}" + Style.RESET_ALL)
     if pourc is not None:
-        print("Pourcentage du terrain: " + str(pourc) + "%")
+        print(Fore.CYAN + Style.NORMAL + f"{'Pourcentage du terrain:': <28}" + f"{str(pourc) + '%':>10}" + Style.RESET_ALL)
 
 
 # Aire totale
@@ -45,10 +46,12 @@ while True:
     pente = None
     classHydro = None
     pourcentageSol = None
+    coefficient = None
+    nouveauSol = None
 
     # Numéro du sol
     nombreSols += 1
-    print("********** Sol #" + str(nombreSols) + " **********")
+    print(Fore.YELLOW + Style.BRIGHT + "********** Sol #" + str(nombreSols) + " **********" + Style.RESET_ALL)
 
     # Végétation
     while True:
@@ -59,7 +62,7 @@ while True:
                 raise Exception
             break
         except Exception:
-            print("\nNOPE, PAS UNE OPTION!\nRÉESSAYE DUMBASS\n")
+            print(Fore.RED + Style.BRIGHT + "\nNOPE, PAS UNE OPTION!\nRÉESSAYE DUMBASS\n" + Style.RESET_ALL)
             continue
     os.system("cls")
     print_reponses(nombreSols, vegetation, pente, classHydro, pourcentageSol, False)
@@ -74,7 +77,7 @@ while True:
                     raise Exception
                 break
             except Exception:
-                print("\nNOPE, PAS UNE OPTION!\nRÉESSAYE DUMBASS\n")
+                print(Fore.RED + Style.BRIGHT + "\nNOPE, PAS UNE OPTION!\nRÉESSAYE DUMBASS\n" + Style.RESET_ALL)
                 continue
         os.system("cls")
         print_reponses(nombreSols, vegetation, pente, classHydro, pourcentageSol, False)
@@ -82,7 +85,7 @@ while True:
         while True:
             classHydro = input("Quelle est la classification hydraulique du sol: ").upper()
             if classHydro not in ["A", "B", "C", "D"]:
-                print("\nNOPE, PAS UNE OPTION!\nRÉESSAYE DUMBASS\n")
+                print(Fore.RED + Style.BRIGHT + "\nNOPE, PAS UNE OPTION!\nRÉESSAYE DUMBASS\n" + Style.RESET_ALL)
                 continue
             break
         os.system("cls")
@@ -94,11 +97,11 @@ while True:
         try:
             pourcentageSol = float(pourcentageSol)
             if not 0 < pourcentageSol <= 100:
-                print("\nNOPE, PAS UNE OPTION!\nRÉESSAYE DUMBASS\n")
+                print(Fore.RED + Style.BRIGHT + "\nNOPE, PAS UNE OPTION!\nRÉESSAYE DUMBASS\n" + Style.RESET_ALL)
                 raise Exception
             if pourcentageRestant - pourcentageSol >= 0:
                 break
-            print("\nNOPE, PAS UNE OPTION!\nPOURCENTAGE ENTRÉ EST PLUS GRAND QUE POURCENTAGE DE TERRAIN RESTANT\nIL RESTE: " + str(pourcentageRestant) + "%\n")
+            print(Fore.RED + Style.BRIGHT + "\nNOPE, PAS UNE OPTION!\nPOURCENTAGE ENTRÉ EST PLUS GRAND QUE POURCENTAGE DE TERRAIN RESTANT\nIL RESTE: " + str(pourcentageRestant) + "%\n" + Style.RESET_ALL)
             raise Exception
         except Exception:
             continue
@@ -203,11 +206,16 @@ while True:
         case 5:
             coefficient = 0.05
 
-    nouveauSol = [vegetation, pente, classHydro, pourcentageSol]
+
+    print(Fore.YELLOW + Style.BRIGHT + "******* Sol #" + str(nombreSols) + " ajouté au calcul ******" + Style.RESET_ALL)
+    print_reponses(None, vegetation, pente, classHydro, pourcentageSol, True)
+    print(Fore.CYAN + Style.BRIGHT + f"{'Coefficient:': <28}" + f"{coefficient:>10}" + Style.RESET_ALL)
+    print(Fore.YELLOW + "*" * 38 + Style.RESET_ALL)
+    input("Appuyez sur ENTER pour continuer")
+    os.system("cls")
+    nouveauSol = [coefficient, pourcentageSol]
     sols.append(nouveauSol)
     pourcentageRestant -= pourcentageSol
-    print("********** Sol #" + str(nombreSols) + " ajouté au calcul **********")
-    print_reponses(None, vegetation, pente, classHydro, pourcentageSol, True)
     if pourcentageRestant <= 0:
         break
 
