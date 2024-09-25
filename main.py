@@ -1,5 +1,8 @@
 import os
+import colorama
 from colorama import Back, Fore, Style
+
+colorama.init()
 
 sols = []
 typesVegetation = ["Culture", "Pâturage", "Boisé", "Lac", "Marécage"]
@@ -29,7 +32,7 @@ def print_reponses(nb, veg, pen, clas, pourc, fin):
 
 # Aire totale
 while True:
-    aireTotale = input("Quelle est la superficie du terrain(en hectare): ")
+    aireTotale = input(Style.RESET_ALL + "Quelle est la superficie du terrain(en hectare): ")
     try:
         aireTotale = float(aireTotale)
         if aireTotale <= 0:
@@ -40,6 +43,8 @@ while True:
         continue
 os.system("cls")
 
+
+# Inputs
 while True:
     # Réinitialisation des variables
     vegetation = None
@@ -213,11 +218,26 @@ while True:
     print(Fore.YELLOW + "*" * 38 + Style.RESET_ALL)
     input("Appuyez sur ENTER pour continuer")
     os.system("cls")
-    nouveauSol = [coefficient, pourcentageSol]
+
+    nouveauSol = [vegetation, coefficient, pourcentageSol]
     sols.append(nouveauSol)
     pourcentageRestant -= pourcentageSol
     if pourcentageRestant <= 0:
         break
 
-print("Caalcuuuuul")
 
+resultat = 0
+pourcLacMare = 0
+for sol in sols:
+    if sol[0] == 4 or sol[0] == 5:
+        resultat += (sol[1] * (aireTotale * (sol[2] / 100))) / aireTotale
+        pourcLacMare += sol[2] / 100
+        sols.remove(sol)
+
+for sol in sols:
+    resultat += (sol[1] * ((aireTotale - aireTotale * pourcLacMare) * (sol[2] / 100))) / aireTotale
+
+print(Back.GREEN + "-" * 40)
+print(Back.GREEN + "|" + Style.RESET_ALL + f"{'Coefficient de ruissellement' :^38}" + Back.GREEN + "|" + Style.RESET_ALL)
+print(Back.GREEN + "|" + Style.RESET_ALL + f"{'-> {:0.5f} <-'.format(resultat) :^38}" + Back.GREEN + "|" + Style.RESET_ALL)
+print(Back.GREEN + "-" * 40 + Style.RESET_ALL)
